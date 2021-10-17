@@ -12,39 +12,52 @@ import Axios from "axios"
  const url = "https://postman-echo.com/post"
 
 function Page() {
-    const [selectedTab, setSelectedTab] = useState(0);
-    const [name, setName]= useState('');
-    const [email, setEmail]= useState('');
-    const [date,setDate] = useState('');
-    const [open, setOpen] = useState(false);
-    const [time,setTime] = useState('');
-    const classes = useStyles();
-    const handleOpen = () => setOpen(true);
-    const handleClose = () =>{setOpen(false); setClick(false)};
-    const [day, setDay] = useState('');
+   const classes = useStyles()
+   const [selectedTab, setSelectedTab] = useState(0);
+
+    const [data, setData]= useState({
+      name: '',
+      email: '',
+      date: '',
+      time: '',
+   
+    });
+
+    const [day,setDay] = useState('')
+    const [open, setOpen] = useState(false)
     const [format, setFormat] = useState('')
     const [click,setClick] = useState(false)
    
     const handleFormat = (event) => {setFormat(event.target.value)};
     const handleSelect = (event) => {setDay(event.target.value);};
     const handleChange = (event, newValue) => {setSelectedTab(newValue);};
-     
+    const handleOpen = () => setOpen(true);
+    const handleClose = () =>{setOpen(false); setClick(false)};
+
+
+    function handle(e) {
+      const newdata = {...data}
+      newdata[e.target.id] = e.target.value;
+      setData(newdata);
+      console.log(newdata);
+    }
 
     useEffect(() => {
       setDay('')
-      setTime('')
-      setDate('')
+      data.time=''
+      data.date= ''
     }, [selectedTab])
 
     const Submit = (e) => {
+      e.preventDefault()
       setClick(true)
        
         Axios.post(url,{
-            name : name ,
-            email: email,
+            name : data.name ,
+            email: data.email,
             format: format,
-            time: time,
-            date: date,
+            time: data.time,
+            date: data.date,
             day: day
      
         }).then(res=>{
@@ -70,8 +83,8 @@ function Page() {
             <Line>
        <Typography sx={{margin:"30px"}}>  Report name</Typography>
         <TextField sx={{margin:"20px 10px 0 0",width:"70%",display:"flex"}} type="text"
-         onChange={e => setName(e.target.value)} value={name}
-        id="outlined-basic" label="Sharable report" variant="outlined"/>
+         onChange={e => handle(e)} value={data.name} 
+        id="name" label="Sharable report" variant="outlined"/>
         </Line>
         <Line>
        <Typography sx={{margin:"20px"}}>  Format</Typography>
@@ -86,8 +99,8 @@ function Page() {
         <Line>
        <Typography sx={{margin:"30px"}}>  E-mail to</Typography>
         <TextField sx={{margin:"20px 0 0  30px", width:"70%",display:"flex"}} type="text"
-         onChange={e => setEmail(e.target.value)} value={email}
-        id="outlined-basic" label="client@company.com" variant="outlined"/>
+          onChange={e => handle(e)} value={data.email} 
+          id="email" label="client@company.com" variant="outlined"/>
         </Line>
         <Line>
        <Typography sx={{margin:"30px 30px 0 30px"}}>  Schedule</Typography>
@@ -102,23 +115,23 @@ function Page() {
         {selectedTab == 0 && <div style={{height:"100px"}} ></div>}
         {selectedTab == 1 && <Line>  <Typography sx={{margin:"30px 30px 0 30px"}}>  Date </Typography>
          <TextField sx={{margin:"20px",width:"30%",display:"flex",}} 
-        id="outlined-basic" onChange={e => setDate(e.target.value)} value={date} type="date" variant="outlined"/>
+         onChange={e => handle(e)} value={data.date} id="date" type="date" variant="outlined"/>
          <Typography sx={{margin:"30px 30px 0 30px"}}>  at </Typography>
           <TextField
          sx={{margin:"20px",width:"30%",display:"flex",}} 
-        id="outlined-basic"  onChange={e => setTime(e.target.value)} value={time} type="time" variant="outlined"/></Line> }
+         onChange={e => handle(e)} value={data.time} id="time" type="time" variant="outlined"/></Line> }
         {selectedTab == 2 && <Line>  <Typography sx={{margin:"30px 30px 0 30px"}}>  Everyday at </Typography>
          <TextField sx={{margin:"20px",width:"30%",display:"flex",}} 
-        id="outlined-basic" type="time" onChange={e => setTime(e.target.value)} value={time} variant="outlined"/></Line> }
+        onChange={e => handle(e)} value={data.time} id="time" type="time" variant="outlined"/></Line> }
         {selectedTab == 3 && <Line>  <Typography sx={{margin:"30px 30px 0 30px"}}>  Every </Typography>
         <InputLabel id="demo-simple-select-label"></InputLabel>
 
         <Select className={classes.select}
           labelId="demo-simple-select-label"
-          id="demo-simple-select"
+          id="day"
           value={day}
-
           onChange={handleSelect}
+        
         >
           <MenuItem value="Monday">Monday</MenuItem>
           <MenuItem value="Tuesday">Tuesday</MenuItem>
@@ -130,9 +143,9 @@ function Page() {
       
         </Select>
          <Typography sx={{margin:"30px 30px 0 30px"}}>  at </Typography>
-          <TextField onChange={e => setTime(e.target.value)} value={time}
+          <TextField onChange={e => handle(e)} value={data.time} id="time" type="time"
          sx={{margin:"20px",width:"30%",display:"flex",}} 
-        id="outlined-basic" type="time" variant="outlined"/></Line>}
+         variant="outlined"/></Line>}
         <BtnWrapper>
         <Typography sx={{display: `${(click ? "flex" : "none")}`, color: "#5ACF6D",width:"50%",margin:"20px",fontSize:"20px"}}
          align="left"        >  Submission has been sent! </Typography>
