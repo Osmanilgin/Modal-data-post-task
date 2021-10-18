@@ -9,7 +9,7 @@ import {useStyles, Container,BtnWrapper,Button3,Button1,Button2,Header,Line,Moda
 import Axios from "axios"
 
 
- const url = "https://postman-echo.com/post"
+ const url = process.env.REACT_APP_API_URL
 
 function Page() {
    const classes = useStyles()
